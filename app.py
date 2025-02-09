@@ -94,14 +94,14 @@ def search_by_cluster(cluster):
     cursor.execute("SELECT word FROM words WHERE cluster = ? ORDER BY word", (cluster,))
     results = cursor.fetchall()
     conn.close()
-    return [r[0] for r in results if r[0] != 'X']
+    return [r[0] for r in results if len(r[0]) > 1]
 
 # Run script
 setup_database()
 generate_words()
 
 totalWords = len(phonemes['consonants'])
-with open('docs/index.html','w',encoding='utf-8') as home:
+with open('index.html','w',encoding='utf-8') as home:
     home.write('''<style>
 body {
     font-family: Verdana;
@@ -114,8 +114,8 @@ for index, consonant in enumerate(phonemes['consonants']):
     if consonant == 'x': fileName = 'vowels'
     else: fileName = consonant
     address = 'initialPhonemes/'
-    file = f"docs/{address}{fileName.lower()}.html"
-    with open('docs/index.html','a',encoding='utf-8') as home:
+    file = f"{address}{fileName.lower()}.html"
+    with open('index.html','a',encoding='utf-8') as home:
         with open(file, 'w', encoding='utf-8') as f:
             f.write('''<style>
 body {
@@ -149,11 +149,11 @@ b {
 <a href='../index.html'><h3><--Back</h3></a>''')
             words = search_by_cluster(consonant.capitalize())  # Fetch words once per consonant
             if fileName == 'vowels': header = fileName.capitalize()
-            else: header = f'{fileName}{fileName} <b>{fileName.lower()}</b>'.capitalize()
+            else: header = f'{fileName}{fileName} <b>({fileName.lower()})</b>'.capitalize()
             f.write(f'\n<h1>{header}</h1>')
             for word in words:
                 num = f'{(words.index(word) + 1):,}'
                 latinWord = word.replace('X','')
                 abugidaWord = word
-                f.write(f'\n<p>{latinWord.capitalize()} <b>.{abugidaWord.lower()}</b></p>')
+                f.write(f'\n<p>{latinWord.capitalize()} <b>({abugidaWord.lower()})</b></p>')
         home.write(f"\n<li><a href='{address}{fileName}.html'>{fileName.capitalize()}</a></li>")
