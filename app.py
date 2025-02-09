@@ -164,7 +164,7 @@ b {
 @font-face {
     font-family: Abugida;
     src: url(
-        "sort/abugida.ttf"
+        "abugida.ttf"
     )
     format(
         "truetype"
